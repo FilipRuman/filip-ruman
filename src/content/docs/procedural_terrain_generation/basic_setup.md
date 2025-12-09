@@ -37,10 +37,10 @@ If you are on nixos and have problem with godot crashing try:
 :::
 
 ``` cs
-/// ground_gen.cs
+/// GroundGen.cs
 using Godot;
 [Tool]
-public partial class ground_gen : MeshInstance3D
+public partial class GroundGen : MeshInstance3D
 {
 
     [Export] bool generate;
@@ -102,7 +102,7 @@ The technique is the same as before:
 * Vertexes: x by x points separated by y distance
 * Indexes: we do the same thing as before but for each vertex point in x by x grid
 ```cs
-/// ground_gen.cs
+/// GroundGen.cs
 
     ...
     [Export] float triangle_size;
@@ -161,7 +161,7 @@ I've separated the noise generation class, because we will be later combining mu
 Now we just sample the noise for each vertex and we should get some nice terrain.
 
 ```cs
-/// ground_gen.cs
+/// GroundGen.cs
     ...
 
     private Vector2 RealPosition(uint x, uint z)
@@ -208,7 +208,7 @@ and than we just run to generate everything needed for light to work with our me
 ```
 
 ``` cs
-/// ground_gen.cs
+/// GroundGen.cs
 
     ...
     private void GenerateVertexes(SurfaceTool st)

@@ -53,7 +53,7 @@ export default defineConfig({
           items: [
             {
               label: "PROCEDURAL TERRAIN GENERATION",
-              link: "https://github.com/FilipRuman/proceduralMapGen",
+              link: "https://github.com/FilipRuman/procedural_terrain_generationV2",
               attrs: {
                 target: "_blank",
                 style: "font-style: bold;font-size: 20px; text-align:center",
@@ -70,20 +70,20 @@ export default defineConfig({
             { slug: "procedural_terrain_generation/spawning_large_structures" },
           ],
         },
-        {
-          label: "🖥️",
-          items: [
-            {
-              label: "C COMPILER WRITTEN IN RUST",
-              link: "https://github.com/FilipRuman/cosinus",
-              attrs: {
-                target: "_blank",
-                style: "font-style: bold;font-size: 20px; text-align:center",
-              },
-            },
-            { slug: "cosinus/tst" },
-          ],
-        },
+        // {
+        //   label: "🖥️",
+        //   items: [
+        //     {
+        //       label: "C COMPILER WRITTEN IN RUST",
+        //       link: "https://github.com/FilipRuman/cosinus",
+        //       attrs: {
+        //         target: "_blank",
+        //         style: "font-style: bold;font-size: 20px; text-align:center",
+        //       },
+        //     },
+        //     { slug: "cosinus/tst" },
+        //   ],
+        // },
         {
           label: "",
           items: [
