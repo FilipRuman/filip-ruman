@@ -2,17 +2,21 @@
 title: 1. basic setup
 description: terrain_gen
 ---
+
 Let's start by creating a godot project, use Forward+ renderer.
 
 ## How drawing meshes actually works?
-Gpu can only draw triangles, so any complex geometry must consist of a bunch of triangles.
-To tell how to draw our triangles we just use arrays of numbers.
+
+Gpu can only draw triangles, so any complex geometry must consist of a bunch of
+triangles. To tell how to draw our triangles we just use arrays of numbers.
 
 ![./rectangle_drawing_ilustration.png]
-* Vertices: Array of 3d vectors-> positions of points in 3d space.
-* Indices: Array of unsigned int-> indexes of vertices.
+
+- Vertices: Array of 3d vectors-> positions of points in 3d space.
+- Indices: Array of unsigned int-> indexes of vertices.
 
 The gpu:
+
 1. reads 3 next indices
 2. uses them as a corners of a triangle
 3. draws this triangle
@@ -20,23 +24,23 @@ The gpu:
 
 ## Generating simple mesh
 
-Godot allows you to procedurally generate meshes, by using the `MeshInstance3D`https://docs.godotengine.org/en/stable/classes/class_meshinstance3d.html.
-And a surface tool https://docs.godotengine.org/en/stable/classes/class_surfacetool.html
-It gives you nice to work with abstraction layer.
+Godot allows you to procedurally generate meshes, by using the
+`MeshInstance3D`https://docs.godotengine.org/en/stable/classes/class_meshinstance3d.html.
+And a surface tool
+https://docs.godotengine.org/en/stable/classes/class_surfacetool.html It gives
+you nice to work with abstraction layer.
 
-:::tip
-If you have a trouble running your script as tool, try following:
+:::tip If you have a trouble running your script as tool, try following:
+
 1. click build project - Alt + B
-2. close godot and launch it again
-:::
+2. close godot and launch it again :::
 
-:::tip
-If you are on nixos and have problem with godot crashing try:
+:::tip If you are on nixos and have problem with godot crashing try:
+
 1. download normal comipled version for .Net for linux from godot website.
-2. run the executable file with steam-run
-:::
+2. run the executable file with steam-run :::
 
-``` cs
+```cs
 /// GroundGen.cs
 using Godot;
 [Tool]
@@ -91,16 +95,19 @@ public partial class GroundGen : MeshInstance3D
 }
 ```
 
-And if we run this code we should see a nice little square that is see through on one side.
-It is see through because godot- like any other game engine, draws triangles form only one site- for performance reasons. 
+And if we run this code we should see a nice little square that is see through
+on one side. It is see through because godot- like any other game engine, draws
+triangles form only one site- for performance reasons.
 
 ![./editor1.png]
 
-One small square won't do much for us.
-We will generate a big square consisting of a series of triangles.
-The technique is the same as before:
-* Vertexes: x by x points separated by y distance
-* Indexes: we do the same thing as before but for each vertex point in x by x grid
+One small square won't do much for us. We will generate a big square consisting
+of a series of triangles. The technique is the same as before:
+
+- Vertexes: x by x points separated by y distance
+- Indexes: we do the same thing as before but for each vertex point in x by x
+  grid
+
 ```cs
 /// GroundGen.cs
 
@@ -137,8 +144,8 @@ The technique is the same as before:
     }
 ```
 
-Now let's make it bumpy like a real life terrain.
-We will be using a `FastNoiseLite` resource because it is amazing!
+Now let's make it bumpy like a real life terrain. We will be using a
+`FastNoiseLite` resource because it is amazing!
 
 ```cs
 ///NoiseComponent.cs
@@ -157,16 +164,19 @@ public partial class NoiseComponent : Resource
 }
 ```
 
-I've separated the noise generation class, because we will be later combining multiple noises to generate better looking terrain.
-Now we just sample the noise for each vertex and we should get some nice terrain.
+I've separated the noise generation class, because we will be later combining
+multiple noises to generate better looking terrain. Now we just sample the noise
+for each vertex and we should get some nice terrain.
 
 ```cs
 /// GroundGen.cs
     ...
 
-    private Vector2 RealPosition(uint x, uint z)
+    [Export] NoiseComponent noise_component;
+    [Export] Vector2 base_world_position;
+    private Vector2 VertexWorldPosition(uint x, uint z)
     {
-        return new(x * triangle_size, z * triangle_size);
+        return new Vector2(x * triangle_size, z * triangle_size) + base_world_position;
     }
 
     private void GenerateVertexes(SurfaceTool st)
@@ -175,9 +185,9 @@ Now we just sample the noise for each vertex and we should get some nice terrain
         {
             for (uint z = 0; z < triangle_count_per_dimension; z++)
             {
-                Vector2 real_pos = RealPosition(x, z);
-                float height = noise_component.GetHeight(real_pos);
-                st.AddVertex(new(real_pos.X, height , real_pos.Y));
+                Vector2 world_pos = VertexWorldPosition(x, z);
+                float height = noise_component.GetHeight(world_pos);
+                st.AddVertex(new(world_pos.X, height, world_pos.Y));
 
             }
         }
@@ -185,45 +195,53 @@ Now we just sample the noise for each vertex and we should get some nice terrain
     }
 ```
 
-Now build this and set the noise component.
-Use just simple fast noise light with simplex noise, set amplitude to 30 and frequency to 50 and run generate... 
+Now build this and set the noise component. Use just simple fast noise light
+with simplex noise, set amplitude to 30 and frequency to 50 and run generate...
 
 ![./editor2.png]
 
-And we see trash...
-This is because we have no light, so we cant see the terrain height changes.
-If we add directional light, we should see some difference... 
-But we don't, this is because we don't have normals on our mesh.
-Normals or rather normal map tells renderer the direction that our mesh triangles are facing.
-I will be talking about generating normals later in this tutorial.
+And we see trash... This is because we have no light, so we cant see the terrain
+height changes. If we add directional light, we should see some difference...
+But we don't, this is because we don't have normals on our mesh. Normals or
+rather normal map tells renderer the direction that our mesh triangles are
+facing. I will be talking about generating normals later in this tutorial.
 
-But thankfully surface tool has a nice function to generate them.
-But for this we need to first generate uv-s for our mesh.
-Uv value is just a vector that goes from 0-1 and tells us in what percent of the mesh this vertex is located 
+But thankfully surface tool has a nice function to generate them. But for this
+we need to first generate uv-s for our mesh. Uv value is just a vector that goes
+from 0-1 and tells us in what percent of the mesh this vertex is located
 
-and than we just run to generate everything needed for light to work with our mesh:
+and than we just run to generate everything needed for light to work with our
+mesh:
+
 ```cs
-        st.GenerateNormals();
-        st.GenerateTangents();
+st.GenerateNormals();
+st.GenerateTangents();
 ```
 
-``` cs
+```cs
 /// GroundGen.cs
 
     ...
     private void GenerateVertexes(SurfaceTool st)
     {
-
-                ...
-                var uv = new Vector2(x / triangle_count_per_dimension, z / triangle_count_per_dimension);
+        for (uint x = 0; x < triangle_count_per_dimension; x++)
+        {
+            for (uint z = 0; z < triangle_count_per_dimension; z++)
+            {
+                var uv = new Vector2(x / (float)triangle_count_per_dimension, z / (float)triangle_count_per_dimension);
                 st.SetUV(uv);
 
-                Vector2 real_pos = RealPosition(x, z);
+                Vector2 world_pos = VertexWorldPosition(x, z);
                 ...
+            }
+        }
     }
 ```
-Now if we regenerate the mesh now we should see a nice terrain with shadows(if we enable it in the light settings) and light working:
+
+Now if we regenerate the mesh now we should see a nice terrain with shadows(if
+we enable it in the light settings) and light working:
 
 ![./editor3.png]
 
-This still doesn't look great because we lack any textures, so this is what we will deal with next.
+This still doesn't look great because we lack any textures, so this is what we
+will deal with next.
