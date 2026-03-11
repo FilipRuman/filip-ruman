@@ -1,3 +1,8 @@
+---
+title: 5. Other Tips
+description: Other Tips
+---
+
 # Other Tips
 
 ## Recording
@@ -6,7 +11,7 @@ For screen recording I use
 [gpu-screen-recorder](https://github.com/BrycensRanch/gpu-screen-recorder-git-copr)
 with this command
 
-```bahs
+```bash
 gpu-screen-recorder \
         -w screen \
         -f 60 \

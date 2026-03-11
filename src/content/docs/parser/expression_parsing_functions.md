@@ -1,20 +1,25 @@
 ---
-title: 5. expression parsing functions 
+title: 5. expression parsing functions
 description: parser
 ---
-Now we we will need to implement functions to parse all of the other expressions that we need.
-And we need to add those expressions to our expression enum, and also update token stats.
+
+Now we we will need to implement functions to parse all of the other expressions
+that we need. And we need to add those expressions to our expression enum, and
+also update token stats.
+
 ## Implementation
-###  Assignment
-Will be called when parsing `= += -= *= /=` tokens.
-It will be used when eg.
+
+### Assignment
+
+Will be called when parsing `= += -= *= /=` tokens. It will be used when eg.
+
 ```rust
 a += 52
 ```
-It needs to know value, operator and target to assign. 
 
+It needs to know value, operator and target to assign.
 
-``` rs
+```rs
 //parser/parsing_functions/mod.rs
 pub fn assignment(parser: &mut Parser, left: Expression, _: i8) -> Result<Expression> {
     let operator = parser.advance().to_owned();
@@ -28,14 +33,14 @@ pub fn assignment(parser: &mut Parser, left: Expression, _: i8) -> Result<Expres
 }
 ```
 
+### Increment && Decrement
 
-### Increment && Decrement 
 It's basically an assignment but without a value
 
 <details>
 <summary> ⚠️ Implementation </summary>
 
-``` rs
+```rs
 //parser/parsing_functions/mod.rs
 pub fn decrement(parser: &mut Parser, left: Expression, _: i8) -> Result<Expression> {
     parser.expect(TokenKind::MinusMinus)?;
@@ -55,19 +60,19 @@ pub fn increment(parser: &mut Parser, left: Expression, _: i8) -> Result<Express
 
 </details>
 
+### Type conversion
 
-### Type conversion 
-
-We have already implemented a nod function for a '(' token - grouping expression, eg. `2 * (52 - 22)`
-But in c to convert type of a variable you do: `bool z = (bool)1`
-So to differentiate this we will check if inside of the parentheses there is an identifier, and if it's value is inside the parser::valid_data_type_names.
-The type conversion itself has to know it's type and value it converts - next expression 
-
+We have already implemented a nod function for a '(' token - grouping
+expression, eg. `2 * (52 - 22)` But in c to convert type of a variable you do:
+`bool z = (bool)1` So to differentiate this we will check if inside of the
+parentheses there is an identifier, and if it's value is inside the
+parser::valid_data_type_names. The type conversion itself has to know it's type
+and value it converts - next expression
 
 <details>
 <summary> ⚠️ Implementation </summary>
 
-``` rs
+```rs
 //parser/parsing_functions/mod.rs
 pub fn open_paren(parser: &mut Parser) -> Result<Expression> {
     parser.expect(TokenKind::OpenParen)?;
@@ -102,20 +107,23 @@ pub fn open_paren(parser: &mut Parser) -> Result<Expression> {
 
 </details>
 
-### Dereference 
+### Dereference
+
 ```c
 void do_smth(int *to_modify){
 ...
 *to_modify = 5;
 ...
-} 
+}
 ```
-You dereference a pointer by putting a star before a name of a variable. dereferencing is a fancy way of saying 'access a value inside a pointer'. 
+
+You dereference a pointer by putting a star before a name of a variable.
+dereferencing is a fancy way of saying 'access a value inside a pointer'.
 
 <details>
 <summary> ⚠️ Implementation </summary>
 
-``` rs
+```rs
 //parser/parsing_functions/mod.rs
 pub fn dereference(parser: &mut Parser) -> Result<Expression> {
     parser.expect(TokenKind::Star)?;
@@ -130,19 +138,19 @@ pub fn dereference(parser: &mut Parser) -> Result<Expression> {
 
 </details>
 
+### Access reference
 
-### Access reference 
-
-``` c
+```c
 int a = 25;
-int *ptr = &a; 
+int *ptr = &a;
 ```
 
 basically a reversed dereference
+
 <details>
 <summary> ⚠️ Implementation </summary>
 
-``` rs
+```rs
 //parser/parsing_functions/mod.rs
 pub fn access_reference(parser: &mut Parser) -> Result<Expression> {
     parser.expect(TokenKind::Reference)?;
@@ -157,19 +165,24 @@ pub fn access_reference(parser: &mut Parser) -> Result<Expression> {
 
 </details>
 
-### Static 
-``` c 
- static int count = 0;
+### Static
+
+```c
+static int count = 0;
 ```
 
-In C, static keyword tells the compiler to store this variable on [.data/.bss](https://www.geeksforgeeks.org/c/memory-layout-of-c-program/) instead of the [stack](https://os.phil-opp.com/heap-allocation/#local-and-static-variables).
+In C, static keyword tells the compiler to store this variable on
+[.data/.bss](https://www.geeksforgeeks.org/c/memory-layout-of-c-program/)
+instead of the
+[stack](https://os.phil-opp.com/heap-allocation/#local-and-static-variables).
 ![memory layout c](https://media.geeksforgeeks.org/wp-content/uploads/20250122155858092295/Memory-Layout-of-C-Program.webp)
-It allows you to make value of this variable persist through the life time of the program, without using heap.
+It allows you to make value of this variable persist through the life time of
+the program, without using heap.
 
 <details>
 <summary> ⚠️ Implementation </summary>
 
-``` rs
+```rs
 //parser/parsing_functions/mod.rs
 pub fn static_expr(parser: &mut Parser) -> Result<Expression> {
     parser.expect(TokenKind::Static)?;
@@ -183,21 +196,21 @@ pub fn static_expr(parser: &mut Parser) -> Result<Expression> {
 
 </details>
 
-
-
 ### Member
-``` c 
- some.thing.to.access = 2;
-```
-Required data:
-* the thing it accesses - left
-* value - right 
 
+```c
+some.thing.to.access = 2;
+```
+
+Required data:
+
+- the thing it accesses - left
+- value - right
 
 <details>
 <summary> ⚠️ Implementation </summary>
 
-``` rs
+```rs
 //parser/parsing_functions/mod.rs
 pub fn member_expr(parser: &mut Parser, left: Expression, _: i8) -> Result<Expression> {
     parser.expect(TokenKind::Dot)?;
@@ -215,12 +228,12 @@ pub fn member_expr(parser: &mut Parser, left: Expression, _: i8) -> Result<Expre
 
 ### Boolean
 
-Just convert true/false tokens into boolean 
+Just convert true/false tokens into boolean
 
 <details>
 <summary> ⚠️ Implementation </summary>
 
-``` rs
+```rs
 //parser/parsing_functions/data_parsing.rs
 pub fn boolean(parser: &mut Parser) -> Result<Expression> {
     let token = parser.advance();
@@ -249,7 +262,7 @@ Just take value from the token
 <details>
 <summary> ⚠️ Implementation </summary>
 
-``` rs
+```rs
 //parser/parsing_functions/data_parsing.rs
 pub fn string(parser: &mut Parser) -> Result<Expression> {
     let token = parser.advance();
@@ -263,10 +276,9 @@ pub fn string(parser: &mut Parser) -> Result<Expression> {
 
 </details>
 
-
 ### CompilerData
 
-``` c
+```c
 #include "this part also should be included"
 ```
 
@@ -275,7 +287,7 @@ This is all you should need to implement this.
 <details>
 <summary> ⚠️ Implementation </summary>
 
-``` rs
+```rs
 //parser/parsing_functions/mod.rs
 pub fn compiler_data(parser: &mut Parser) -> Result<Expression> {
     Ok(Expression::CompilerData(
@@ -289,10 +301,15 @@ pub fn compiler_data(parser: &mut Parser) -> Result<Expression> {
 
 ### Open curly
 
-In C there are many things that could be wrapped in curly braces, thank fully most of them will be parsed by functions called when encountering a keyword beforehand eg. ``if (...) {if statement contents}`` or ``int test(){function contents}``.
-This allows us to only have to think about 2 cases.
-* creating a new 'scope' 
-``` c
+In C there are many things that could be wrapped in curly braces, thank fully
+most of them will be parsed by functions called when encountering a keyword
+beforehand eg. `if (...) {if statement contents}` or
+`int test(){function contents}`. This allows us to only have to think about 2
+cases.
+
+- creating a new 'scope'
+
+```c
 int test_fn(){
     {
         int var_name = 25;
@@ -300,30 +317,35 @@ int test_fn(){
     int var_name = 55;
 }
 ```
-* initializing a struct
-``` c
+
+- initializing a struct
+
+```c
 myStructure s1 = {13, 'B', "Some text"};
 ```
 
-We will need to first check with which case we are dealing and than call appropriate function.
+We will need to first check with which case we are dealing and than call
+appropriate function.
 
-####  Scope block
+#### Scope block
 
-
-Scope block will just consist of an array of expressions that represent lines inside of it.  
+Scope block will just consist of an array of expressions that represent lines
+inside of it.\
 We will be just parsing expressions until we encounter a right curly brace.
 
-#### Struct initialization 
+#### Struct initialization
 
-To initialize a struct we just need to know values inside the initialization that we will be assigning.
+To initialize a struct we just need to know values inside the initialization
+that we will be assigning.
 
-This may seem hard at first, but actually is pretty easy, coma has a low binding power so parsing expressions, with binding power of 0, in a loop and moving past comas  will give us needed values.  
-
+This may seem hard at first, but actually is pretty easy, coma has a low binding
+power so parsing expressions, with binding power of 0, in a loop and moving past
+comas will give us needed values.
 
 <details>
 <summary> ⚠️ Implementation </summary>
 
-``` rs
+```rs
 //parser/parsing_functions/statement_parsing.rs
 pub fn parse_open_curly(parser: &mut Parser) -> Result<Expression> {
     parser.expect(TokenKind::OpenCurly)?;
@@ -379,44 +401,52 @@ pub fn parse_data_structure_initialization(parser: &mut Parser) -> Result<Expres
 
 ### Identifier Token
 
-In rust for example you write let when you declare a variable or fn when you declare a function.
-In c compiler must 'guess' your intention.
-To accomplish this we will use the ``parser::valid_data_type_names``.
+In rust for example you write let when you declare a variable or fn when you
+declare a function. In c compiler must 'guess' your intention. To accomplish
+this we will use the `parser::valid_data_type_names`.
 
-If the value of a token isn't inside of the ``parser::valid_data_type_names`` we will just output an identifier expression with it's value.
+If the value of a token isn't inside of the `parser::valid_data_type_names` we
+will just output an identifier expression with it's value.
 
-We need to use ``types::parse()`` to get data type that we will be using for next expressions.
-Than we need to check if the next token is a identifier:
-    a. it is: we take it's value as a name for variable/function.
-    b. it isn't: just return a 'DataTypeAccess' expression with the data type that we parsed before. 
+We need to use `types::parse()` to get data type that we will be using for next
+expressions. Than we need to check if the next token is a identifier: a. it is:
+we take it's value as a name for variable/function. b. it isn't: just return a
+'DataTypeAccess' expression with the data type that we parsed before.
 
-Than we need to check for array declaration, because in c you put square brackets after a variable name: ``int array[][] = ...; ``.
-So we use ``types::wrap_data_type_in_an_array`` for this.
- 
+Than we need to check for array declaration, because in c you put square
+brackets after a variable name: `int array[][] = ...;`. So we use
+`types::wrap_data_type_in_an_array` for this.
 
-Next we need to check weather we are dealing with a function or variable declaration. 
-We can do it by checking if the next token is a '('.
+Next we need to check weather we are dealing with a function or variable
+declaration. We can do it by checking if the next token is a '('.
 
-For variable declaration we know everything that we need so we will just return expression with variable name and type.
+For variable declaration we know everything that we need so we will just return
+expression with variable name and type.
 
 Now we need to deal with function declaration:
-``` c
+
+```c
 int* func(int param,char* text){...}
 ---------
 //this is the part that we have already parsed
 ```
-#### Parsing function parameters 
-we will do the same  as during parsing the struct declaration, but than we need to read value of the next character as a name.
+
+#### Parsing function parameters
+
+we will do the same as during parsing the struct declaration, but than we need
+to read value of the next character as a name.
+
 #### Parsing function contents
+
 this is the same as when parsing a scope block.
 
-
-Than we need to just return a function expression with: name, data type, parameters, and contents.
+Than we need to just return a function expression with: name, data type,
+parameters, and contents.
 
 <details>
 <summary> ⚠️ Implementation </summary>
 
-``` rs
+```rs
 //parser/parsing_functions/identifier_parsing.rs
 use crate::{
     lexer::token::TokenKind,
@@ -516,9 +546,9 @@ fn handle_function_declaration(
 
 </details>
 
+### If / else
 
-### If / else 
-``` c
+```c
 if(condition && !other_thing){
 contents
 }else if(a>0){
@@ -528,15 +558,18 @@ contents
 }
 ```
 
-It is possible to chain multiple else if-s and every one has it's contents and conditions.  
-Also we need to remember to expect all of the parentheses and curly brackets and keywords like if and else.
-To parse conditions we will just use parsing_functions::expression with binding power of 0. 
-It should nicely parse all of the conditions at once and leave parentheses thanks to the binding power of all of the tokens.
+It is possible to chain multiple else if-s and every one has it's contents and
+conditions.\
+Also we need to remember to expect all of the parentheses and curly brackets and
+keywords like if and else. To parse conditions we will just use
+parsing_functions::expression with binding power of 0. It should nicely parse
+all of the conditions at once and leave parentheses thanks to the binding power
+of all of the tokens.
 
 <details>
 <summary> ⚠️ Implementation </summary>
 
-``` rs
+```rs
 //parser/parsing_functions/statement_parsing.rs
 pub fn parse_if(parser: &mut Parser) -> Result<Expression> {
     parser.expect(TokenKind::If)?;
@@ -604,19 +637,21 @@ fn parse_else(parser: &mut Parser) -> Result<(Expression, bool)> {
 
 </details>
 
-### While 
+### While
 
-``` c 
+```c
 while (i >25){
     i/2;
 }
 ```
-Parsing while loop isn't different from parsing if-s in almost any way.
-You need to read condition and contents.
+
+Parsing while loop isn't different from parsing if-s in almost any way. You need
+to read condition and contents.
+
 <details>
 <summary> ⚠️ Implementation </summary>
 
-``` rs
+```rs
 //parser/parsing_functions/statement_parsing.rs
 pub fn parse_while(parser: &mut Parser) -> Result<Expression> {
     parser.expect(TokenKind::While)?;
@@ -643,13 +678,14 @@ pub fn parse_while(parser: &mut Parser) -> Result<Expression> {
 
 </details>
 
-### Break 
+### Break
 
 Just return expression with debug data inside and expect token of kind Break.
+
 <details>
 <summary> ⚠️ Implementation </summary>
 
-``` rs
+```rs
 //parser/parsing_functions/mod.rs
 pub fn break_expr(parser: &mut Parser) -> Result<Expression> {
     parser.expect(TokenKind::Break)?;
@@ -661,18 +697,21 @@ pub fn break_expr(parser: &mut Parser) -> Result<Expression> {
 
 </details>
 
-### For 
-``` c
+### For
+
+```c
 for(int i =0;i<25;i++){
 ...
 }
 ```
-To parse for loop we basically need to use ``parsing_functions::expression`` 3 times and than parse contents
+
+To parse for loop we basically need to use `parsing_functions::expression` 3
+times and than parse contents
 
 <details>
 <summary> ⚠️ Implementation </summary>
 
-``` rs
+```rs
 //parser/parsing_functions/statement_parsing.rs
 pub fn parse_for(parser: &mut Parser) -> Result<Expression> {
     // for(int i =0;i<25;i++){
@@ -709,20 +748,23 @@ pub fn parse_for(parser: &mut Parser) -> Result<Expression> {
 
 </details>
 
-### Typedef 
+### Typedef
+
 ```c
 typedef struct {
   char brand[2];
   int year;
 } Car;
 ```
-Type def tells our compiler that we want to create a new data type with some name - push it into ``Parser::valid_data_type_names``
-To parse it we need to parse data type and name.
+
+Type def tells our compiler that we want to create a new data type with some
+name - push it into `Parser::valid_data_type_names` To parse it we need to parse
+data type and name.
 
 <details>
 <summary> ⚠️ Implementation </summary>
 
-``` rs
+```rs
 //parser/parsing_functions/mod.rs
 pub fn type_def(parser: &mut Parser) -> Result<Expression> {
     parser.expect(TokenKind::Typedef)?;
@@ -749,11 +791,13 @@ pub fn type_def(parser: &mut Parser) -> Result<Expression> {
 ```c
 smth = array[x+2];
 ```
+
 We need to know expression that we are accessing, and index.
+
 <details>
 <summary> ⚠️ Implementation </summary>
 
-``` rs
+```rs
 //parser/parsing_functions/mod.rs
 pub fn array_access(parser: &mut Parser, left: Expression, _: i8) -> Result<Expression> {
     parser.expect(TokenKind::OpenBracket)?;
@@ -770,22 +814,23 @@ pub fn array_access(parser: &mut Parser, left: Expression, _: i8) -> Result<Expr
 
 </details>
 
-### Function call 
+### Function call
 
-``` c
+```c
 func_name(i,x/25,car.name.char());
 ```
+
 this will be called by open parentheses.
 
 Needed data:
+
 - expression on the left
 - function parameters
-
 
 <details>
 <summary> ⚠️ Implementation </summary>
 
-``` rs
+```rs
 //parser/parsing_functions/mod.rs
 pub fn function_call(parser: &mut Parser, left: Expression, _: i8) -> Result<Expression> {
     parser.expect(TokenKind::OpenParen)?;
@@ -817,7 +862,7 @@ pub fn function_call(parser: &mut Parser, left: Expression, _: i8) -> Result<Exp
 
 </details>
 
-### Return 
+### Return
 
 ```c
 return a+b;
@@ -826,7 +871,7 @@ return a+b;
 <details>
 <summary> ⚠️ Implementation </summary>
 
-``` rs
+```rs
 //parser/parsing_functions/mod.rs
 pub fn return_expr(parser: &mut Parser) -> Result<Expression> {
     parser.expect(TokenKind::Return)?;
@@ -840,21 +885,23 @@ pub fn return_expr(parser: &mut Parser) -> Result<Expression> {
 
 </details>
 
-
-as you can see implementing a c parser is a pretty easy task but it requires a lot of repetitive work.
+as you can see implementing a c parser is a pretty easy task but it requires a
+lot of repetitive work.
 
 ## Adding token stats
 
-Now we need to assign our newly implemented functions to be called by right tokens.
-Look at all tokens in token stats functions inside ``parser/token_stats.rs`` and think which functions seem appropriate to use.
-If you are not sure go back to the part where we were implementing certain function and think where it should be used.
+Now we need to assign our newly implemented functions to be called by right
+tokens. Look at all tokens in token stats functions inside
+`parser/token_stats.rs` and think which functions seem appropriate to use. If
+you are not sure go back to the part where we were implementing certain function
+and think where it should be used.
 
 ## At the end:
 
 <details>
 <summary> ⚠️ Implementation </summary>
 
-``` rust
+````rust
 //parser/expression.rs
 use crate::{
     lexer::token::{Token, TokenKind},
@@ -1082,10 +1129,9 @@ pub fn boolean(parser: &mut Parser) -> Result<Expression> {
         parser.debug_data(),
     ));
 }
-```
+````
 
-
-``` rust
+```rust
 //parser/parsing_functions/identifier_parsing.rs
 
 use crate::{
@@ -1181,11 +1227,9 @@ fn handle_function_declaration(
         debug_data: parser.debug_data(),
     })
 }
-
 ```
 
-
-``` rust
+```rust
 //parser/parsing_functions/mod.rs
 use crate::{
     lexer::token::TokenKind,
@@ -1425,11 +1469,9 @@ pub fn access_reference(parser: &mut Parser) -> Result<Expression> {
         debug_data: parser.debug_data(),
     })
 }
-
 ```
 
-
-``` rust
+```rust
 //parser/parsing_functions/statement_parsing.rs
 use std::collections::vec_deque;
 
@@ -2020,3 +2062,35 @@ pub fn token_stats() -> HashMap<TokenKind, TokenStats> {
     ])
 }
 ```
+
+---
+
+#### Bug?
+
+If you find anything to improve on this site or in this project's code, please
+create an issue describing it on
+[GitHub repo for this project](https://github.com/FilipRuman/RIP/issues).
+
+#### Support
+
+This all pages on this site are written by a human and you can see everything
+for free without any ads. If you think that my work is valuable then please
+[give a star to GitHub repo for this project](https://github.com/FilipRuman/RIP)
+
+<script src="https://giscus.app/client.js"
+        data-repo="FilipRuman/RIP"
+        data-repo-id="R_kgDOQNyZng"
+        data-category="Announcements"
+        data-category-id="DIC_kwDOQNyZns4C4CHN"
+        data-mapping="specific"
+        data-term="expression parsing functions"
+        data-strict="0"
+        data-reactions-enabled="1"
+        data-emit-metadata="0"
+        data-input-position="top"
+        data-theme="preferred_color_scheme"
+        data-lang="en"
+        data-loading="lazy"
+        crossorigin="anonymous"
+        async>
+</script>

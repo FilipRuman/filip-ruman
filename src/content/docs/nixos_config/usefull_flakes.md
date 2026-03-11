@@ -1,6 +1,9 @@
-# Useful Flakes
+---
+title: 3. Useful Flakes
+description: Useful Flakes
+---
 
-## nix-flatpak
+## Nix-Flatpak
 
 [Nix-Flatpak](https://github.com/gmodena/nix-flatpak) is a great tool that
 allows us to install flatpaks decleratively. We can just write and import a

@@ -1,4 +1,7 @@
-# Config Structure
+---
+title: 1. Config Structure
+description: Config Structure
+---
 
 Generally speaking it doesn't matter how your config is structured. It's the
 same thing as with programming, if you have a small project than the structure
@@ -22,7 +25,7 @@ To setup a very basic dendritic pattern project we will use this command:
 inside a git directory under `/etc/nixos/`. Using git you will be able to easily
 sync your config with other devices, and store it safely.
 
-:::Warning
+:::danger
 
 Most 'dumb/random' errors that I had when working with nix config, were because
 of git. If files in a subdirectory are not 'visible' when you rebuild your
@@ -51,13 +54,13 @@ created by the previous command. All the nix files will be imported
 automatically by the [import tree flake](https://github.com/vic/import-tree)
 unless you put "_name" as the name of a file or directory.
 
-### Host Modules
+## Host Modules
 
 under the "modules" directory create a "hosts" subdirectory.\
 We will put there config that will allow specific machines behave in specific
 ways, while utilizing the same project as a config.
 
-::: Example
+:::tip[example]
 
 Your homelab doesn't have to have hyprland installed on it(you ssh onto it), but
 your laptop does. The same thing will be happenign with many other things like:
@@ -108,7 +111,7 @@ Than inside of the `inputs.nixpkgs.lib.nixosSystem`, we will be able to import a
 Example of this is the  `flake.nixosModules.$host` module created in the
 previous snippet.
 
-#### Hardware Config
+### Hardware Config
 
 We need to copy your hardware config file from the
 '/etc/nixos/hardware-config.nix' to the './modules/host/$host/hw-config.nix'
@@ -176,18 +179,18 @@ This is how my hw-config looks:
 }
 ```
 
-::: Warning
+:::danger
 
 Do not copy **MY** config, it will **100% MAKE YOUR OS UN BOOTABLE**!
 
 :::
 
-### Example Modules
+## Example Modules
 
 Now I will show how some example NixOS modules would look like, they are taken
 straight from my personal config:
 
-#### 1. Enable NVIDIA GPU Support
+### 1. Enable NVIDIA GPU Support
 
 ```nix
 ### ./modules/nvidia.nix
@@ -219,7 +222,7 @@ straight from my personal config:
 }
 ```
 
-#### 2. Docker with NVIDIA GPU Pass thru Support
+### 2. Docker with NVIDIA GPU Pass thru Support
 
 ```nix
 ### ./modules/docker.nix
@@ -252,7 +255,7 @@ nixosConfigurations.$host = inputs.nixpkgs.lib.nixosSystem {
 }
 ```
 
-### Adding External Flake Input with 'Flake-File'
+## Using Flake-File
 
 Sometimes we need to an external flakes. Example of use case for this is
 installing some programs that don't have a normal package or the package doesn't
@@ -286,7 +289,7 @@ rebuild our config, to add any newly added flakes to our source
 flake(`./flake.nix`). I've myself added this command to run always when I
 rebuild my config, so I don't forget about it.
 
-### Home Manager Modules
+## Home Manager Modules
 
 If you don't yet know what
 [Home-Manager](https://github.com/nix-community/home-manager) is, you hosestly
@@ -325,7 +328,7 @@ Here is an example home manager flake:
 }
 ```
 
-#### Making Home Manager Work
+### Making Home Manager Work
 
 Now we need to change our $host module
 
@@ -378,7 +381,7 @@ Now we need to change our $host module
 This will import the home-manager flake and set it up so that it imports all the
 home-manager modules.
 
-### Actually Using This Config
+## Actually Using This Config
 
 I really like having one command to do many things at once. So I've setup
 commands for updating my OS. This is really nice, I just rune this command once

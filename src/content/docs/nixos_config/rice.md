@@ -1,4 +1,7 @@
-# Rice
+---
+title: 4. Rice
+description: Rice
+---
 
 I really like to make programs that I use, look and behave in the exact way that
 I want. This includes: keyboard, whole desk setup, text editor and OS as a
@@ -93,14 +96,15 @@ pc. I can do this because I have a library of tens of absolute banger 4k+
 wallpapers(No I will not share them, finding them by hand is a part of the
 experience).
 
-Using waypaper with swaybg as a backend I can eayly make my wallpapers be chosen
-randomly eaverytime I open hyprland. I just add to exec-once "waypaper --random"
-inside the hyprland's config. You also need to remember to set right setting
-inside the waypaper's gui.
+Using [waypaper](https://github.com/anufrievroman/waypaper) with
+[swaybg](https://github.com/swaywm/swaybg) as a backend I can eayly make my
+wallpapers be chosen randomly eaverytime I open hyprland. I just add to
+exec-once "waypaper --random" inside the hyprland's config. You also need to
+remember to set right setting inside the waypaper's gui.
 
 ## Plymouth
 
-TODO: add gif to my theme
+![Plymoth theme i use](https://raw.githubusercontent.com/adi1090x/files/master/plymouth-themes/previews/63.gif)
 
 Plymouth allows to display nice looking animation during startup & shutdown of
 your pc. This looks nice especially if you have encrypted your disk(as you
@@ -542,7 +546,7 @@ My Hypridle config:
 
 ## Rofi
 
-[my rofi config](./rofi.png)
+![my rofi config](./rofi.png)
 
 > A window switcher, Application launcher and dmenu replacement.
 
@@ -551,7 +555,7 @@ for it and, it just works for me. The only mode that I use is dmenu anyway.
 
 ## SDDM
 
-[my sddm config](./sddm.png)
+![my sddm config](./sddm.png)
 
 [SDDM](https://github.com/sddm/sddm)
 
@@ -616,7 +620,7 @@ My whole config:
 }
 ```
 
-::: NOTE[Pro TIP]
+:::tip
 
 If you ever have a problem with sddm or other software that doesn't allow you to
 boot into your normal desktop enviorment do following: Press Ctrl + LAlt +

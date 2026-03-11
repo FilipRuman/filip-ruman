@@ -1,4 +1,7 @@
-# Quick Installation
+---
+title: 2. Quick Installation
+description: Quick Installation
+---
 
 Ability to quickly and easily install your config is really important for
 obvious reasons. To acomplish this we want to be able to copy configuration,
