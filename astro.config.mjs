@@ -6,8 +6,8 @@ import starlightUtils from "@lorenzo_lewis/starlight-utils";
 import starlightImageZoom from "starlight-image-zoom";
 import sitemap from "@astrojs/sitemap";
 export default defineConfig({
-  site: "https://filipruman.github.io",
-  base: "/pages",
+  site: "https://filip-ruman.pages.dev/",
+  base: "/",
   integrations: [starlight({
       head: [
                 {
