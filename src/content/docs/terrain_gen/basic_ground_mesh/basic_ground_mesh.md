@@ -460,7 +460,7 @@ will deal with next.
 
 If you find anything to improve in this project's code, please create an issue
 describing it on the
-[GitHub repository for this project](https://github.com/FilipRuman/procedural_terrain_generationV/2issues).
+[GitHub repository for this project](https://github.com/FilipRuman/procedural_terrain_generationV2/issues).
 For website-related issues, create an issue
 [here](https://github.com/FilipRuman/pages/issues).
 
