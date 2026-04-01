@@ -110,6 +110,7 @@ export default defineConfig({
             { slug: "terrain_gen/basic_ground_mesh/basic_ground_mesh" },
             { slug: "terrain_gen/ground_shader/ground_shader" },
             { slug: "terrain_gen/chunked_terrain_generation/chunked_terrain_generation" },
+            { slug: "terrain_gen/improved_landmass_generation/improved_landmass_generation" },
           ],
         },
 
@@ -132,21 +133,6 @@ export default defineConfig({
           { slug: "nixos_config/other_tips" },
         ],
       },
-
-      // {
-      //   label: "🖥️",
-      //   items: [
-      //     {
-      //       label: "C COMPILER WRITTEN IN RUST",
-      //       link: "https://github.com/FilipRuman/cosinus",
-      //       attrs: {
-      //         target: "_blank",
-      //         style: "font-style: bold;font-size: 20px; text-align:center",
-      //       },
-      //     },
-      //     { slug: "cosinus/tst" },
-      //   ],
-      // },
       {
         label: "",
         items: [

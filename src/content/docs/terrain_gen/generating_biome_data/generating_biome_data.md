@@ -649,6 +649,10 @@ public partial class GenerationController : Node
 }
 ```
 
+## Configuration
+
+TODO: Describe configuration
+
 ## Results
 
 TODO: Add photos

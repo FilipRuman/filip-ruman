@@ -772,6 +772,3 @@ free without ads. If you find this work valuable, please give a star to the
         crossorigin="anonymous"
         async>
 </script>
-
-```
-```

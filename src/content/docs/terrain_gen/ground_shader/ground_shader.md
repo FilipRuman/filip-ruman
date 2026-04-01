@@ -373,7 +373,7 @@ Than we need to modify some of the functions
 -       output += stochastic_sample(biome_texture, uv_y * biome_scale).rgb * weights.y;
 +		partial = triple_stochastic_sample(biome_normal_map, biome_texture, biome_roughness, uv_y * biome_scale);
 +		output.normal += partial.normal * weights.y;
-+		output.albedo += partial.albedo * weights.y + biome_tint - vec3(biome_color_offset);
++		output.albedo += (partial.albedo + biome_tint - vec3(biome_color_offset))* weights.y  ;
 +		output.roughness += partial.roughness * weights.y;
 	}
 	if (weights.z > 0.01){
