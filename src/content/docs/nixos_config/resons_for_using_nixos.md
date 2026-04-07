@@ -1,9 +1,127 @@
 ---
-title:
-description:
+title: Why you should use NixOS
+description: Features that makes NixOS the best linux distribution and my story trying linux.
 ---
 
-## My story with linux
+If you are thinking about switching to NixOS than you are in the right place.
+
+## Best NixOS Features
+
+### Updates
+
+NixOS uses [two separate main channels](https://nixos.wiki/wiki/Nix_channels)
+which allows it to satisfy two different groups of users, users that favor
+stability over everything else and users that want bleeding edge features.
+
+> Stable channels (nixos-25.11) provide conservative updates for fixing bugs and
+> security vulnerabilities, but do not receive major updates after initial
+> release. New stable channels are released every six months.
+>
+> Unstable channels (nixos-unstable, nixpkgs-unstable) correspond to the main
+> development branch (unstable) of Nixpkgs, delivering the latest tested updates
+> on a rolling basis.
+
+### Stability
+
+From my almost 3 year experience, with daily driving NixOS on the unstable
+branch, the commonest issue with the NixOS is that sometimes on the unstable
+branch you can't compile one of the packages. This means that if you don't feel
+like helping nixos team with solving the issue than you can just ignore it most
+of the time and try updating your OS the next week. Most of the time the issue
+will be solved within a one week.
+
+Of course there are sometimes issue with the newer versions of packages. Not
+that long ago I had an issue with [SDDM](https://github.com/sddm/sddm) not
+working at all. But NixOS has an easy way to solve these kinds of problems- you
+can just rollback to the previous generation. When you encounter regression in
+any package that you use, just submit an issue to the repo of that package and
+than rollback to the previous generation and use this package like nothing has
+happened.
+
+### Documentation
+
+The [NixOS wiki](https://nixos.wiki) is a great learinging resource. It has
+hight quality information for most of the popular programs. NixOS is popular
+enought that a lot of the linux programs have information sections dedicated for
+Nixos. You can always use information made for other distros,
+[arch wiki](https://wiki.archlinux.org/title/Main_page) a great learining
+resource for distros other than arch.
+
+### Packages
+
+[NixOS has the biggest packages repository in the world](https://repology.org/repository/nix_unstable).
+If this wasn't enough you can install flatpaks declaratively with
+[Nix-flatpak](https://filip-ruman.pages.dev/nixos_config/usefull_flakes/#nix-flatpak)
+or run standard Linux executables without any issues with steam-run.
+
+### Easy Customization
+
+To install something like [KDE plasma](https://kde.org/plasma-desktop/) with all
+additional apps you can just copy this configuration form the NixOS wiki.
+
+```nix
+services = {
+  desktopManager.plasma6.enable = true;
+  displayManager.sddm.enable = true;
+  displayManager.sddm.wayland.enable = true;
+};
+
+environment.systemPackages = with pkgs; [
+  # KDE Utilities
+  kdePackages.discover # Optional: Software center for Flatpaks/firmware updates
+  kdePackages.kcalc # Calculator
+  kdePackages.kcharselect # Character map
+  kdePackages.kclock # Clock app
+  kdePackages.kcolorchooser # Color picker
+  kdePackages.kolourpaint # Simple paint program
+  kdePackages.ksystemlog # System log viewer
+  kdePackages.sddm-kcm # SDDM configuration module
+  kdiff3 # File/directory comparison tool
+  
+  # Hardware/System Utilities (Optional)
+  kdePackages.isoimagewriter # Write hybrid ISOs to USB
+  kdePackages.partitionmanager # Disk and partition management
+  hardinfo2 # System benchmarks and hardware info
+  wayland-utils # Wayland diagnostic tools
+  wl-clipboard # Wayland copy/paste support
+  vlc # Media player
+];
+```
+
+Uninstalling it is as simple as commenting out this or not importing module with
+this configuration. Installing and customizing most of the apps on NixOS is as
+easy. You can also use
+[Home-Manager](https://nix-community.github.io/home-manager/) to manage all the
+dot-configs on all of your systems easily and declaratively.
+
+### Easy System Backups
+
+NixOS allows you to avoid most of the issues that would make your system
+unusable by storing previous generations so if you were to encouter a fatal
+regression you can just move to the previous generation. You can also setup
+[btrfs](https://nixos.wiki/wiki/Btrfs) to store snapshots of your system like
+you should on other distros. I personally think that this isn't needed on NixOS.
+
+:::warn
+
+Remember to always follow the 3,2,1 rule when handling any important data.
+
+The 3-2-1 backup rule is a data storage strategy that recommends keeping three
+copies of your data, on two different types of media, with one copy stored
+off-site.
+
+:::
+
+### Quick Setup on a New Machine
+
+[I've written about installing installing my whole configuration with one command in here](https://github.com/nix-community/nixos-anywhere).\
+This process is so fast that I can install NixOS form scratch using a live ISO
+on my desktop within 20 minutes. NixOS makes it so easy because I just need to
+clone my config from public GitHub repo(I don't need to even log into anything)
+and rebuild my system. You can even do this remotely through ssh with
+[nixos-anywhere](https://github.com/nix-community/nixos-anywhere)
+
+## My Story with Using Linux
 
 I have been using nixos as my daily driver on my stationary pc and laptop for
 almost 3 years. Before that I was using windows with a window managers
@@ -69,7 +187,7 @@ discovered great windows software like [whim](https://github.com/dalyIsaac/Whim)
 or [UniGetUI](https://github.com/Devolutions/UniGetUI). The configuration that I
 was using was so good that I didin't reallisticly have any reason to switch back
 to linux, but I just wanted to do this because the windows was just getting
-worse and worse.\
+worse and worse.
 
 The next time that I've swithced to NixOS I had a configuration that was a mess
 but working in the way that I've wanted. This allowed me to research how to
@@ -81,19 +199,3 @@ data and it is really easy to setup an encrypted partition that makes data on
 your pc 100% safe(if you have a strong password ) while you are away form it.
 Switching to linux also allowed me to discover software that made my workflow a
 lot better- yazi, zoxide, etc.
-
-## Best NixOS Features
-
-### Updates
-
-### Bleeding Edge Packages
-
-### Stability
-
-### Documentation
-
-### Easy Customization
-
-### Easy Backups
-
-### Quick Setup on a New Machine
