@@ -95,28 +95,24 @@ export default defineConfig({
       },
     ],
     sidebar: [
-      // {
-      //   label: "⛰️",
-      //   items: [
-      //     {
-      //       label: "PROCEDURAL TERRAIN GENERATION",
-      //       link: "https://github.com/FilipRuman/procedural_terrain_generationV2",
-      //       attrs: {
-      //         target: "_blank",
-      //         style: "font-style: bold;font-size: 20px; text-align:center",
-      //       },
-      //     },
-      //     { slug: "procedural_terrain_generation/preamble" },
-      //     { slug: "procedural_terrain_generation/basic_setup" },
-      //     { slug: "procedural_terrain_generation/ground_textures" },
-      //     {
-      //       slug: "procedural_terrain_generation/terrain_generation_quality_improvements",
-      //     },
-      //     { slug: "procedural_terrain_generation/performane_improvements" },
-      //     { slug: "procedural_terrain_generation/spawning_small_objects" },
-      //     { slug: "procedural_terrain_generation/spawning_large_structures" },
-      //   ],
-      // },
+        {
+          label: "⛰️",
+          items: [
+            {
+              label: "PROCEDURAL TERRAIN GENERATION",
+              link: "https://github.com/FilipRuman/procedural_terrain_generationV2",
+              attrs: {
+                target: "_blank",
+                style: "font-style: bold;font-size: 20px; text-align:center",
+              },
+            },
+            { slug: "terrain_gen/overview/overview" },
+            { slug: "terrain_gen/basic_ground_mesh/basic_ground_mesh" },
+            //{ slug: "terrain_gen/ground_shader/ground_shader" },
+            //{ slug: "terrain_gen/chunked_terrain_generation/chunked_terrain_generation" },
+            //{ slug: "terrain_gen/improved_landmass_generation/improved_landmass_generation" },
+          ],
+        },
 
       {
         label: "",
@@ -129,6 +125,7 @@ export default defineConfig({
               style: "font-style: bold;font-size: 20px; text-align:center",
             },
           },
+          { slug: "nixos_config/resons_for_using_nixos" },
           { slug: "nixos_config/overview" },
           { slug: "nixos_config/config_structure" },
           { slug: "nixos_config/quick_installation" },
@@ -137,21 +134,20 @@ export default defineConfig({
           { slug: "nixos_config/other_tips" },
         ],
       },
-
-      // {
-      //   label: "🖥️",
-      //   items: [
-      //     {
-      //       label: "C COMPILER WRITTEN IN RUST",
-      //       link: "https://github.com/FilipRuman/cosinus",
-      //       attrs: {
-      //         target: "_blank",
-      //         style: "font-style: bold;font-size: 20px; text-align:center",
-      //       },
-      //     },
-      //     { slug: "cosinus/tst" },
-      //   ],
-      // },
+      {
+        label: "󰳳",
+        items: [
+          {
+            label: "One shots",
+            link: "https://github.com/FilipRuman",
+            attrs: {
+              target: "_blank",
+              style: "font-style: bold;font-size: 20px; text-align:center",
+            },
+          },
+          { slug: "one_shot/godot_debugging" },
+        ],
+      },
       {
         label: "",
         items: [
